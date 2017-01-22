@@ -62,7 +62,8 @@
 
 -spec start_link(ranch:ref(), inet:socket(), module(), opts()) -> {ok, pid()}.
 start_link(Ref, Socket, Transport, Opts) ->
-	Pid = spawn_link(?MODULE, init, [Ref, Socket, Transport, Opts]),
+	Pid = proc_lib:spawn_opt(?MODULE, init, [Ref, Socket, Transport, Opts],
+		                     [link, {scheduler, rand:uniform(erlang:system_info(schedulers))}]),
 	{ok, Pid}.
 
 %% Internal.
